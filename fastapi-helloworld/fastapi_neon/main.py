@@ -43,7 +43,7 @@ app = FastAPI(lifespan=lifespan, title="Hello World API with DB",
     version="0.0.1",
     servers=[
         {
-            "url": "http://0.0.0.0:8000", # ADD NGROK URL Here Before Creating GPT Action
+            "url": "http://localhost:8000", # ADD NGROK URL Here Before Creating GPT Action
             "description": "Development Server"
         }
         ])
@@ -70,6 +70,16 @@ def read_todos(session: Annotated[Session, Depends(get_session)]):
         todos = session.exec(select(Todo)).all()
         return todos
 
-@app.get("/city")
-def read_city():
-     return{"City":"New York"}
+@app.get("/todos/{id}", response_model=Todo)
+def read_todo(id:int, session: Annotated[Session, Depends(get_session)]):
+        todos = session.get(Todo, id)
+        return todos
+
+
+@app.delete("/todos/{id}")
+def delete_todos(session: Annotated[Session, Depends(get_session)], id: int):
+     todo = session.get(Todo, id)
+     session.delete(todo)
+     session.commit()
+     return { "Succesfully deleted todo": id} 
+
