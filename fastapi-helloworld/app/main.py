@@ -1,7 +1,7 @@
 # main.py
 from contextlib import asynccontextmanager
 from typing import Union, Optional, Annotated
-from fastapi_neon import settings
+from app import settings # type: ignore
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 from fastapi import FastAPI, Depends
 
